@@ -5,7 +5,10 @@ import './App.css'
 import { Route, Routes} from 'react-router-dom'
 import HomePage from './pages/HomePage'
 import RegistrationPage from './pages/RegistrationPage'
+import LoginPage from './pages/LoginPage'
+import ProjectsPage from './pages/ProjectsPage'
 import NavBar from './components/NavBar'
+import Footer from './components/Footer'
 
 function App() {
   const [count, setCount] = useState(0)
@@ -17,7 +20,10 @@ function App() {
       <Routes>
         <Route path='/' element={<HomePage/>} />
         <Route path='/register' element={<RegistrationPage/>} />
+        <Route path='/login' element={<LoginPage/>} />
+        <Route path='/dashboard' element={<ProjectsPage/>}/>
       </Routes>
+      <Footer/>
     </>
   )
 }
