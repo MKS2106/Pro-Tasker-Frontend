@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { backendClient } from "../client/backendClient";
+// import { updateProject } from "../../../backend/controllers/projectController";
+
+import { useNavigate } from "react-router-dom";
 
 function ProjectsPage() {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [deadLine, setDeadLine] = useState("");
   const [projects, setProjects] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -16,7 +22,7 @@ function ProjectsPage() {
             )}`,
           },
         });
-
+        console.log(res.data);
         setProjects(res.data);
       } catch (error) {}
     };
@@ -40,33 +46,72 @@ function ProjectsPage() {
       setProjects((prev) => [...prev, res.data]);
       setName(" ");
       setDescription(" ");
-    //   console.log(res);
+      //   console.log(res);
     } catch (error) {
       console.error(error);
     }
   };
 
+  //ToDo:========================== Date: 07/29/2025 =============================================
+
+  /** 
+   * 
+   *    const handleEdit = async (projectId) => {
+    // const projectId = e.target.id
+    console.log(`Trying to Edit the project ${projectId}`)
+    try {
+      const res = await backendClient.put(
+        `/projects/${projectId}`,
+        { name: "UpdatedName", description:"UpdatedDescrption" },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("protasker-token")
+            )}`,
+          },
+        }
+      );
+      const updatedProjects = projects.map((project) => project._id === res.data._id ? res.data : project)
+     setProjects(updatedProjects);
+      //   console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+   * 
+   * 
+  */
+
+  const handleDelete = async (projectId) => {
+    // const projectId = e.target.id
+    console.log(`Trying to delete the project${projectId}`);
+    try {
+      const res = await backendClient.delete(
+        `/projects/${projectId}`,
+        // { name: "UpdatedName", description:"UpdatedDescrption" },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("protasker-token")
+            )}`,
+          },
+        }
+      );
+      const updatedProjects = projects.filter(
+        (project) => project._id !== res.data._id
+      );
+      setProjects(updatedProjects);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  //=========================================== Date: 07/29/2025 =====================================
+
   return (
     <main className="max-w-md mx-auto p-4">
-      <div className="mb-4">
-        {projects.length > 0 && (
-          <>
-            <h2 className="font-bold text-xl mb-1 mt-4">Project List:</h2>
-            {projects.map((project) => (
-              <div key={project._id}>
-                <h4 className="underline text-blue-600 font-bold">
-                  {project.name}
-                </h4>
-                <p>{project.description}</p>
-                <button>edit</button>
-                <button>delete</button>
-              </div>
-            ))}
-          </>
-        )}
-      </div>
-
-      <form className="flex flex-col space-y-4" onSubmit={handleSubmit}>
+      <h1>Welcome {projects.user} </h1>
+      <form className="flex flex-col space-y-4 mt-3" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name" />
           <input
@@ -75,6 +120,7 @@ function ProjectsPage() {
             name="name"
             placeholder="Project Name"
             onChange={(e) => setName(e.target.value)}
+            required
           />
         </div>
 
@@ -87,6 +133,19 @@ function ProjectsPage() {
             placeholder="Description"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label htmlFor="deadLine">Due date</label>
+          <input
+            className="border rounded px-3 py-2 w-full"
+            type="date"
+            name="deadLine"
+            // placeholder="DueDate"
+            value={deadLine}
+            onChange={(e) => setDeadLine(e.target.value)}
+            // required
           />
         </div>
 
@@ -96,6 +155,47 @@ function ProjectsPage() {
           value="Add Project"
         />
       </form>
+      <div className="mb-4">
+        {projects.length > 0 && (
+          <>
+            <h2 className="font-bold text-xl mb-1 mt-4">Project List:</h2>
+            {projects.map((project) => (
+              <div
+                key={project._id}
+                className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200"
+              >
+                <h4
+                  className="text-lg font-semibold text-blue-600 underline mb-2"
+                  onClick={() => navigate(`/projects/${project._id}`)}
+                >
+                  {project.name}
+                </h4>
+                <p className="text-gray-700 mb-4">{project.description}</p>
+
+                {/*
+                <label>StartDate:</label>
+                <p>{project.createdAt}</p>
+                <label>EndDate: To be Set</label>
+                <p>{project.deadLine}</p>
+*/}
+
+                {/* <p>{project.user.username}</p> */}
+
+                {/* Edit logic moving to Project Detail page */}
+                {/* <button className="px-3 py-1 mr-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200" onClick={() => handleEdit(project._id)}>Edit</button> */}
+
+                {/* <button id={project._id} className="border rounded mr-1 p-1" onClick={handleDelete}>delete</button> */}
+                <button
+                  className="px-3 py-1 bg-red-100 text-red-800 border border-red-300 rounded hover:bg-red-200"
+                  onClick={() => handleDelete(project._id)}
+                >
+                  delete
+                </button>
+              </div>
+            ))}
+          </>
+        )}
+      </div>
     </main>
   );
 }

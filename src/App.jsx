@@ -7,6 +7,7 @@ import HomePage from './pages/HomePage'
 import RegistrationPage from './pages/RegistrationPage'
 import LoginPage from './pages/LoginPage'
 import ProjectsPage from './pages/ProjectsPage'
+import ProjectDetailPage from './pages/ProjectDetailPage'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
@@ -22,6 +23,8 @@ function App() {
         <Route path='/register' element={<RegistrationPage/>} />
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/dashboard' element={<ProjectsPage/>}/>
+        <Route path='/projects/:projectId' element={<ProjectDetailPage/>}/>
+        
       </Routes>
       <Footer/>
     </>
