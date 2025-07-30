@@ -10,6 +10,10 @@ function ProjectsPage() {
   const [deadLine, setDeadLine] = useState("");
   const [projects, setProjects] = useState([]);
 
+  //State management : to edit the project
+  const [isEditing, setIsEditing] = useState(false)
+  const [editingProjectId, setEditingProjectId] = useState("");
+  
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -29,12 +33,34 @@ function ProjectsPage() {
     fetchProjects();
   }, []);
 
+
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await backendClient.post(
+
+      if(isEditing){
+        const res = await backendClient.put(
+        `/projects/${editingProjectId}`,
+        { name, description, deadLine },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("protasker-token")
+            )}`,
+          },
+        }
+      );
+
+       const updatedProjects = projects.map((project) => project._id === res.data._id ? res.data : project)
+     setProjects(updatedProjects);
+
+      } else{
+
+
+        const res = await backendClient.post(
         "/projects",
-        { name, description },
+        { name, description, deadLine },
         {
           headers: {
             Authorization: `Bearer ${JSON.parse(
@@ -44,43 +70,33 @@ function ProjectsPage() {
         }
       );
       setProjects((prev) => [...prev, res.data]);
-      setName(" ");
-      setDescription(" ");
+
+     
+    }
+
+     //reset form data
+      setIsEditing(false)
+      setEditingProjectId("")
+      setName("");
+      setDescription("");
+      setDeadLine("")
       //   console.log(res);
-    } catch (error) {
+      }
+       catch (error) {
       console.error(error);
     }
   };
 
   //ToDo:========================== Date: 07/29/2025 =============================================
-
-  /** 
-   * 
-   *    const handleEdit = async (projectId) => {
-    // const projectId = e.target.id
-    console.log(`Trying to Edit the project ${projectId}`)
-    try {
-      const res = await backendClient.put(
-        `/projects/${projectId}`,
-        { name: "UpdatedName", description:"UpdatedDescrption" },
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("protasker-token")
-            )}`,
-          },
-        }
-      );
-      const updatedProjects = projects.map((project) => project._id === res.data._id ? res.data : project)
-     setProjects(updatedProjects);
-      //   console.log(res);
-    } catch (error) {
-      console.error(error);
-    }
+   const handleEdit = async (project) => {
+    setIsEditing(true)
+    setEditingProjectId(project._id)
+    setName(project.name)
+    setDescription(project.description)
+    setDeadLine(project.deadLine || "")
+   
   }
-   * 
-   * 
-  */
+  
 
   const handleDelete = async (projectId) => {
     // const projectId = e.target.id
@@ -119,6 +135,7 @@ function ProjectsPage() {
             type="text"
             name="name"
             placeholder="Project Name"
+            value={name}
             onChange={(e) => setName(e.target.value)}
             required
           />
@@ -152,7 +169,7 @@ function ProjectsPage() {
         <input
           className="border bg-sky-100 font-bold rounded p-1 text-blue-800"
           type="submit"
-          value="Add Project"
+          value={ isEditing ? "Update Project" : "Create Project"}
         />
       </form>
       <div className="mb-4">
@@ -181,8 +198,7 @@ function ProjectsPage() {
 
                 {/* <p>{project.user.username}</p> */}
 
-                {/* Edit logic moving to Project Detail page */}
-                {/* <button className="px-3 py-1 mr-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200" onClick={() => handleEdit(project._id)}>Edit</button> */}
+                <button className="px-3 py-1 mr-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200" onClick={() => handleEdit(project)}>Edit</button>
 
                 {/* <button id={project._id} className="border rounded mr-1 p-1" onClick={handleDelete}>delete</button> */}
                 <button

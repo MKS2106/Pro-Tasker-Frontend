@@ -1,41 +1,49 @@
 import { useState, useEffect } from "react";
 import { backendClient } from "../client/backendClient";
-import {useParams, useNavigate} from "react-router-dom"
+import { useParams, useNavigate } from "react-router-dom";
+import TasksPage from "./TasksPage";
 
-function ProjectDetailPage(){
-    const {projectId} = useParams();
-    const [title, setTitle] = useState("");
-    const [description, setDescription] = useState("");
-    const [taskDueDate, setTaskDueDate]= useState("")
-    const [project, setProject] = useState("");
-    const [tasks, setTasks] = useState([])
+function ProjectDetailPage() {
+  const { projectId } = useParams();
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [taskDueDate, setTaskDueDate] = useState("");
+  const [project, setProject] = useState({}); //project is an object so setting it as an object
+  const [tasks, setTasks] = useState([]);
+  const [showForm, setShowForm] = useState(false);
 
-    const navigate = useNavigate();
+  const [editTask, setEditTask] = useState("")
 
-     useEffect(() => {
-        const fetchProject = async () => {
-          try {
-              const res = await backendClient.get(`/projects/${projectId}`, {
-              headers: {
-                Authorization: `Bearer ${JSON.parse(
-                  localStorage.getItem("protasker-token")
-                )}`,
-              },
-            });
-            console.log(res.data)
-            setProject(res.data);
-            
-          } catch (error) {}
-        };
-        fetchProject();
-      }, [projectId]);
+  const navigate = useNavigate();
 
-      const handleSubmit = async (e) => {
+  useEffect(() => {
+    const fetchProject = async () => {
+      try {
+        const res = await backendClient.get(`/projects/${projectId}`, {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("protasker-token")
+            )}`,
+          },
+        });
+        console.log(res.data);
+        setProject(res.data);
+        setTasks(res.data.task);
+      } catch (error) {}
+    };
+    fetchProject();
+  }, [projectId]);
+
+  //Handler to add tasks for the project
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await backendClient.post(
-        `/tasks/${projectId}`,
-        { title, description },
+        if(editTask){
+
+
+                const res = await backendClient.put(
+        `/tasks/${editTask._id}`,
+        { title, description, deadLine: taskDueDate },
         {
           headers: {
             Authorization: `Bearer ${JSON.parse(
@@ -44,107 +52,151 @@ function ProjectDetailPage(){
           },
         }
       );
-      setTasks((prev) => [...prev, res.data]);
-    //   setName(" ");
-    //   setDescription(" ");
+
+       const updatedTasks = tasks.map((task) => task._id === res.data._id ? res.data : task)
+     setTasks(updatedTasks);
+
+      setEditTask("")
+
+        } else{
+             const res = await backendClient.post(
+        `/tasks/${projectId}`,
+        { title, description, deadLine: taskDueDate },
+        {
+          headers: {
+            Authorization: `Bearer ${JSON.parse(
+              localStorage.getItem("protasker-token")
+            )}`,
+          },
+        }
+      );
+        setTasks((prev) => [...prev, res.data]);
+        }
+     
+      
+      setTitle("");
+      setDescription("");
+      setTaskDueDate("");
+      setShowForm(false);
       //   console.log(res);
     } catch (error) {
       console.error(error);
     }
   };
 
+     const handleTaskEdit = async (taskId) => {
 
+        const task = tasks.find((task) => task._id === taskId)
+   console.log(task)
+        if(task){
+              setEditTask(task)
+    setTitle(task.title)
+    setDescription(task.description)
+    setTaskDueDate(task.deadLine || "")
+    setShowForm(true); 
+        }
+    // setEditTask("")
+  }
 
-    return(
-        <main className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md border border-gray-200">
+  const handleTaskDelete = async (taskId) => {
+    // const projectId = e.target.id
+    console.log(`Trying to delete the project${taskId}`);
+    try {
+      const res = await backendClient.delete(`/tasks/${taskId}`, {
+        headers: {
+          Authorization: `Bearer ${JSON.parse(
+            localStorage.getItem("protasker-token")
+          )}`,
+        },
+      });
+      const updatedtasks = tasks.filter((task) => task._id !== res.data._id);
+      setTasks(updatedtasks);
+      console.log(res);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-            {/* Project Details Page */}
-            <h1 className="text-2xl font-semibold text-gray-800 mb-6 border-b pb-2">Project Detail Page</h1>
+  return (
+    <main className="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-lg shadow-md border border-gray-200">
+      <h1 className="text-2xl font-bold text-gray-800 mb-6 border-b pb-2 text-center">
+        Project Detail Page
+      </h1>
 
-            {/* Rendering Project Information */}
-            <div>
-                {/* <p className="text-sm text-gray-500 uppercase" >Project Name:</p> */}
-                <p className="text-gray-800 text-4xl font-bold mb-4">{project.name}</p>
-            </div>
-
-             <div>
-                <p className="text-sm text-gray-500 uppercase" >Project Descrption:</p>
-                <p className="text-gray-500">{project.description}</p>
-            </div>
-
-             <div>
-                <p className="text-sm text-gray-500" >Projec Start Date:</p>
-                <p className="text-gray-700">{project.createdAt ? new Date(project.createdAt).toLocaleDateString(): "Not Started Yet"}</p>
-            </div>
-
-             <div>
-                <p className="text-sm text-gray-500" >Project Name:</p>
-                <p className="text-gray-700">{project.deadLine ? new Date(project.deadLine).toLocaleDateString(): "TBD"}</p>
-            </div>     
-            <div>
-                 {tasks.map((task) => (
-                    <div key={task._id} className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200" >
-                <h4 className="text-lg font-semibold text-blue-600 underline mb-2"
-                onClick={() => navigate(`/tasks/${task._id}`)}
-                >
-                  {task.title}
-                </h4>
-                <p className="text-gray-700 mb-4">{task.description}</p>
-                </div>
-                   ))}
-                
-            </div>
-
-    {/******************************** Adding new Tasks *****************************************/}
-            <form className="flex flex-col space-y-4 mt-3" onSubmit={handleSubmit}>
+      <div className="flex justify-between item-start mb-4">
         <div>
-          <label htmlFor="title" />
-          <input
-            className="border rounded px-3 py-2 w-full"
-            type="text"
-            name="title"
-            placeholder="Task Title"
-            onChange={(e) => setTitle(e.target.value)}
-            required
-          />
-        </div>
+        {/* Rendering Project Information */}        
+           <p className="text-gray-800 text-4xl font-bold mb-4">{project.name}</p>       
+           <p className="text-xl font-bold text-gray-500">Project Descrption:</p>
+           <p className="text-gray-500 mb-4 ">{project.description}</p>     
+          <p className="text-l font-bold text-gray-500">Projec Start Date:</p>
+          <p className="text-gray-700 mb-2">
+            {project.createdAt
+              ? new Date(project.createdAt).toLocaleDateString()
+              : "Not Started Yet"}
+          </p>                
+          <p className="text-l font-bold text-gray-500">Project DeadLine:</p>
+          <p className="text-gray-700">
+            {project.deadLine
+              ? new Date(project.deadLine).toLocaleDateString()
+              : "TBD"}
+          </p>
+          </div>
+            <button
+          className="h-fit mb-3 px-7 py-2 bg-green-100 font-bold text-green-800 border border-green-300 rounded hover:bg-green-200"
+          onClick={() => setShowForm((prev) => !prev)}
+        >
+          {showForm? "Cancel" : "+ Add Task" }
+        </button>
+      </div>
 
-        <div>
-          <label htmlFor="description" />
-          <input
-            className="border rounded px-3 py-2 w-full"
-            type="text"
-            name="description"
-            placeholder="Description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            required
-          />
-        </div>
-        <div>
-          <label htmlFor="taskDueDate">Due date</label>
-          <input
-            className="border rounded px-3 py-2 w-full"
-            type="date"
-            name="taskDueDate"
-            // placeholder="DueDate"
-            value={taskDueDate}
-            onChange={(e) => setTaskDueDate(e.target.value)}
-            // required
-          />
-        </div>
+      {/* Rendering Tasks */}
+      <div>
+        {tasks.map((task) => (
+          <div
+            key={task._id}
+            className="bg-white shadow-md rounded-lg p-4 mb-4 border border-gray-200"
+          >
+            <h4
+              className="text-lg font-semibold text-blue-600 underline mb-2"
+              //   onClick={() => navigate(`/tasks/${task._id}`)}
+            >
+              {task.title}
+            </h4>
+            <p className="text-gray-700 mb-4">{task.description}</p>
+            {task.deadLine && (
+              <p className="text-gray-700 mb-4">
+                Due Date: {new Date(task.deadLine).toLocaleDateString()}
+              </p>
+            )}
 
-        <input
-          className="border bg-sky-100 font-bold rounded p-1 text-blue-800"
-          type="submit"
-          value="AddTask"
+            <button onClick = {() => handleTaskEdit(task._id)}className="mr-4 px-3 py-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200">
+              Edit
+            </button>
+            <button
+              className="px-3 py-1 bg-red-100 text-red-800 border border-red-300 rounded hover:bg-red-200"
+              onClick={() => handleTaskDelete(task._id)}
+            >
+              Delete
+            </button>
+          </div>
+        ))}
+      </div>
+
+      {/******************************** Adding new Tasks *****************************************/}
+      {showForm && (
+        <TasksPage
+          title={title}
+          description={description}
+          taskDueDate={taskDueDate}
+          setTitle={setTitle}
+          setDescription={setDescription}
+          setTaskDueDate={setTaskDueDate}
+          onSubmit={handleSubmit}
+          isEditing={!!editTask}
         />
-      </form>
-
-                  
-           
-         
-        </main>
-    )
+      )}
+    </main>
+  );
 }
-export default ProjectDetailPage
+export default ProjectDetailPage;
