@@ -11,14 +11,25 @@ import ProjectDetailPage from './pages/ProjectDetailPage'
 import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
+import { useUser} from './context/UserContext'
+
 function App() {
-  const [count, setCount] = useState(0)
+  const { user } = useUser()
 
   return (
     <>
      <h1 className='font-bold'> ProTasker- A Project Management App</h1>
      <NavBar/>
-      <Routes>
+
+      {!user? (
+        <Routes>
+        <Route path='/' element={<HomePage/>} />
+        <Route path='/register' element={<RegistrationPage/>} />
+        <Route path='/login' element={<LoginPage/>} />
+               
+      </Routes>
+      ): (
+        <Routes>
         <Route path='/' element={<HomePage/>} />
         <Route path='/register' element={<RegistrationPage/>} />
         <Route path='/login' element={<LoginPage/>} />
@@ -26,6 +37,8 @@ function App() {
         <Route path='/projects/:projectId' element={<ProjectDetailPage/>}/>
         
       </Routes>
+      )}
+      
       <Footer/>
     </>
   )

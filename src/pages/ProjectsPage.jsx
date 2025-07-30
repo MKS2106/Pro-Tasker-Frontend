@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { backendClient } from "../client/backendClient";
-// import { updateProject } from "../../../backend/controllers/projectController";
 
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../context/UserContext";
 
 function ProjectsPage() {
   const [name, setName] = useState("");
@@ -15,8 +15,14 @@ function ProjectsPage() {
   const [editingProjectId, setEditingProjectId] = useState("");
   
   const navigate = useNavigate();
+  const {user} = useUser();
 
   useEffect(() => {
+    const token = localStorage.getItem("protasker-token")
+    console.log(token)
+    if(token){
+
+   
     const fetchProjects = async () => {
       try {
         const res = await backendClient.get("/projects", {
@@ -30,8 +36,12 @@ function ProjectsPage() {
         setProjects(res.data);
       } catch (error) {}
     };
+
+    
     fetchProjects();
+     }
   }, []);
+  
 
 
 
@@ -126,7 +136,7 @@ function ProjectsPage() {
 
   return (
     <main className="max-w-md mx-auto p-4">
-      <h1>Welcome {projects.user} </h1>
+      <h1>Welcome {user.username} </h1>
       <form className="flex flex-col space-y-4 mt-3" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name" />

@@ -1,8 +1,11 @@
 import { useState } from "react"
 import { backendClient } from "../client/backendClient"
 import { useNavigate } from "react-router-dom"
+import { useUser } from "../context/UserContext";
 
 function LoginPage(){
+
+    const {setUser} = useUser();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: "",
@@ -20,7 +23,8 @@ function LoginPage(){
             const res = await backendClient.post('/users/login', formData)
             console.log(res.data)
             localStorage.setItem('protasker-token', JSON.stringify(res.data.token))
-    
+            
+            setUser(res.data.user)
             navigate('/dashboard')
             
         } catch (error) {
