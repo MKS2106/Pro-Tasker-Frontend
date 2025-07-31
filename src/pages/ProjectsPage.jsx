@@ -18,14 +18,23 @@ function ProjectsPage() {
   const {user} = useUser();
 
   useEffect(() => {
+
+    //  if(!user || !user.role) return 
+
+
     // const token = localStorage.getItem("protasker-token")
     // console.log(token)
     // if(token){
 
+    
+    const endpoint = user.role === 'admin'? "/projects/adminprojects" : "/projects"
+  
+    
    
     const fetchProjects = async () => {
       try {
-        const res = await backendClient.get("/projects", {
+        const res = await backendClient.get(endpoint, { //Adding this line to accomodate admin user as well
+          // const res = await backendClient.get("/projects", {
           headers: {
             Authorization: `Bearer ${JSON.parse(
               localStorage.getItem("protasker-token")
