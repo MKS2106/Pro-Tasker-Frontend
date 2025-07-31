@@ -37,6 +37,13 @@ function NavBar() {
             <li>
               <NavLink to="/">Home</NavLink>
             </li>
+            {/* Added link for admin use yet to verify the user role */}
+            {user.role === 'admin' && (
+            <li>
+              <NavLink to="/allusers">AllUsers</NavLink>
+            </li>
+            )}
+
             <li>
               {/* <h3>dashboard - coming soon</h3> */}
               <NavLink to="/dashboard">Dashboard</NavLink>

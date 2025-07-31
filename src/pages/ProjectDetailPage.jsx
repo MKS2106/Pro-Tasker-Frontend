@@ -12,7 +12,10 @@ function ProjectDetailPage() {
   const [tasks, setTasks] = useState([]);
   const [showForm, setShowForm] = useState(false);
 
-  const [editTask, setEditTask] = useState("")
+  const [editTask, setEditTask] = useState("");
+
+  // added to track task status
+  const [status, setStatus] = useState("");
 
   const navigate = useNavigate();
 
@@ -38,54 +41,51 @@ function ProjectDetailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      // to add validation for past date - Reference: mod-4 SBA
+      const dueDate = new Date(taskDueDate);
+      const today = new Date();
 
-         // to add validation for past date - Reference: mod-4 SBA
-     const dueDate = new Date(taskDueDate)
-     const today = new Date()
-      
-        if(dueDate < today){
-          alert("Due date cannot be in the past")
-          setTaskDueDate("")
-          return
-
+      if (dueDate < today) {
+        alert("Due date cannot be in the past");
+        setTaskDueDate("");
+        return;
       }
-        if(editTask){
+      if (editTask) {
+        const res = await backendClient.put(
+          `/tasks/${editTask._id}`,
+          { title, description, status, deadLine: taskDueDate },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(
+                localStorage.getItem("protasker-token")
+              )}`,
+            },
+          }
+        );
 
+        const updatedTasks = tasks.map((task) =>
+          task._id === res.data._id ? res.data : task
+        );
+        setTasks(updatedTasks);
 
-                const res = await backendClient.put(
-        `/tasks/${editTask._id}`,
-        { title, description, deadLine: taskDueDate },
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("protasker-token")
-            )}`,
-          },
-        }
-      );
-
-       const updatedTasks = tasks.map((task) => task._id === res.data._id ? res.data : task)
-     setTasks(updatedTasks);
-
-      setEditTask("")
-
-        } else{
-             const res = await backendClient.post(
-        `/tasks/${projectId}`,
-        { title, description, deadLine: taskDueDate },
-        {
-          headers: {
-            Authorization: `Bearer ${JSON.parse(
-              localStorage.getItem("protasker-token")
-            )}`,
-          },
-        }
-      );
+        setEditTask("");
+      } else {
+        const res = await backendClient.post(
+          `/tasks/${projectId}`,
+          { title, description, status, deadLine: taskDueDate },
+          {
+            headers: {
+              Authorization: `Bearer ${JSON.parse(
+                localStorage.getItem("protasker-token")
+              )}`,
+            },
+          }
+        );
         setTasks((prev) => [...prev, res.data]);
-        }
-     
-      
+      }
+
       setTitle("");
+      setStatus("");
       setDescription("");
       setTaskDueDate("");
       setShowForm(false);
@@ -95,26 +95,28 @@ function ProjectDetailPage() {
     }
   };
 
-     const handleTaskEdit = async (taskId) => {
-
-        const task = tasks.find((task) => task._id === taskId)
-   console.log(task)
-        if(task){
-              setEditTask(task)
-    setTitle(task.title)
-    setDescription(task.description)
-    setTaskDueDate(task.deadLine || "")
-    setShowForm(true); 
-        }
+  const handleTaskEdit = async (taskId) => {
+    const task = tasks.find((task) => task._id === taskId);
+    console.log(task);
+    if (task) {
+      setEditTask(task);
+      setTitle(task.title);
+      setDescription(task.description);
+      setStatus(task.status);
+      setTaskDueDate(task.deadLine || "");
+      setShowForm(true);
+    }
     // setEditTask("")
-  }
+  };
 
   const handleTaskDelete = async (taskId) => {
     // const projectId = e.target.id
     console.log(`Trying to delete the project${taskId}`);
-    const confirm = window.confirm("Are you sure you want to delete this task?")
-    if(!confirm){
-            return
+    const confirm = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+    if (!confirm) {
+      return;
     }
     try {
       const res = await backendClient.delete(`/tasks/${taskId}`, {
@@ -140,35 +142,38 @@ function ProjectDetailPage() {
 
       <div className="flex justify-between item-start mb-4">
         <div>
-        {/* Rendering Project Information */}        
-           <p className="text-gray-800 text-4xl font-bold mb-4">{project.name}</p>       
-           <p className="text-xl font-bold text-gray-500">Project Descrption:</p>
-           <p className="text-gray-500 mb-4 ">{project.description}</p>     
+          {/* Rendering Project Information */}
+          <p className="text-gray-800 text-4xl font-bold mb-4">
+            {project.name}
+          </p>
+          <p className="text-xl font-bold text-gray-500">Project Descrption:</p>
+          <p className="text-gray-500 mb-4 ">{project.description}</p>
           <p className="text-l font-bold text-gray-500">Projec Start Date:</p>
           <p className="text-gray-700 mb-2">
             {project.createdAt
               ? new Date(project.createdAt).toLocaleDateString()
               : "Not Started Yet"}
-          </p>                
+          </p>
           <p className="text-l font-bold text-gray-500">Project DeadLine:</p>
           <p className="text-gray-700">
             {project.deadLine
               ? new Date(project.deadLine).toLocaleDateString()
               : "TBD"}
           </p>
-          </div>
-            <button
+        </div>
+        <button
           className="h-fit mb-3 px-7 py-2 bg-green-100 font-bold text-green-800 border border-green-300 rounded hover:bg-green-200"
           onClick={() => {
-            if(showForm){
-              setTitle("")
-              setDescription("")
-              setTaskDueDate("")
-              setEditTask("")
+            if (showForm) {
+              setTitle("");
+              setDescription("");
+              setTaskDueDate("");
+              setEditTask("");
             }
-            setShowForm((prev) => !prev)}}
+            setShowForm((prev) => !prev);
+          }}
         >
-          {showForm? "Cancel" : "+ Add Task" }
+          {showForm ? "Cancel" : "+ Add Task"}
         </button>
       </div>
 
@@ -186,13 +191,17 @@ function ProjectDetailPage() {
               {task.title}
             </h4>
             <p className="text-gray-700 mb-4">{task.description}</p>
+            <p className="text-gray-700 mb-4">{task.status}</p>
             {task.deadLine && (
               <p className="text-gray-700 mb-4">
                 Due Date: {new Date(task.deadLine).toLocaleDateString()}
               </p>
             )}
 
-            <button onClick = {() => handleTaskEdit(task._id)}className="mr-4 px-3 py-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200">
+            <button
+              onClick={() => handleTaskEdit(task._id)}
+              className="mr-4 px-3 py-1 bg-yellow-100 text-yellow-800 border border-yellow-300 rounded hover:bg-yellow-200"
+            >
               Edit
             </button>
             <button
@@ -205,7 +214,12 @@ function ProjectDetailPage() {
         ))}
       </div>
       <div className="text-center">
-        <Link to="/dashboard" className="inline-block bg-blue-200 font-semibold py-1 px-3 rounded ">Back</Link>
+        <Link
+          to="/dashboard"
+          className="inline-block bg-blue-200 font-semibold py-1 px-3 rounded "
+        >
+          Back
+        </Link>
       </div>
 
       {/******************************** Adding new Tasks *****************************************/}
@@ -214,7 +228,9 @@ function ProjectDetailPage() {
           title={title}
           description={description}
           taskDueDate={taskDueDate}
+          status={status}
           setTitle={setTitle}
+          setStatus={setStatus}
           setDescription={setDescription}
           setTaskDueDate={setTaskDueDate}
           onSubmit={handleSubmit}

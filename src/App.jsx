@@ -12,6 +12,7 @@ import NavBar from './components/NavBar'
 import Footer from './components/Footer'
 
 import { useUser} from './context/UserContext'
+import AdminUser from './pages/AdminUser'
 
 function App() {
   const { user } = useUser()
@@ -45,6 +46,9 @@ function App() {
         <Route path='/login' element={<LoginPage/>} />
         <Route path='/dashboard' element={<ProjectsPage/>}/>
         <Route path='/projects/:projectId' element={<ProjectDetailPage/>}/>
+
+        {/* Added route for admin user */}
+        <Route path='/allusers' element={<AdminUser/>}/>
         
       </Routes>
       )}

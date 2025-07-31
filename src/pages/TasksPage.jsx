@@ -1,5 +1,5 @@
 function TasksPage({
-    title, description, taskDueDate, setTitle, setDescription, setTaskDueDate, onSubmit, isEditing
+    title, description, status, setStatus, taskDueDate, setTitle, setDescription, setTaskDueDate, onSubmit, isEditing
 }){
     return(
         <form className="flex flex-col space-y-4 mt-3" onSubmit={onSubmit}>
@@ -28,6 +28,21 @@ function TasksPage({
             required
           />
         </div>
+{/* Code to add task status */}
+        <div>
+          <label htmlFor="status" />
+          <select
+            className="border rounded px-3 py-2 w-full"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}>
+              <option value="">Please select</option>
+              <option value="to-do">To Do</option>
+              <option value="in-progress">In Progress</option>
+              <option value="done">Done</option>
+              
+              </select>
+        </div>
+
         <div>
           <label htmlFor="taskDueDate">Due date</label>
           <input

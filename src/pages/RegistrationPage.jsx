@@ -15,7 +15,7 @@ function RegistrationPage(){
   });
 
 const handleChange = (e) => {
-    setError("")
+    setError("") //Added for error handling
     setFormData({
         ...formData, [e.target.name]: e.target.value
     })
@@ -23,22 +23,29 @@ const handleChange = (e) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+    //     if (formData.password.length < 5) {
+    //   alert("Password must be at least 5 characters");
+    //   return;
+    // }
         const res = await backendClient.post('/users/register', formData)
         console.log(res.data)
         localStorage.setItem('protasker-token', JSON.stringify(res.data.token))
-
+        setError("");
         navigate('/login')
 
     } catch (error) {
             console.log(error)
-            const errorMessage = error.response?.data?.message || "Login Failed. Please try again"
-            setError(errorMessage)
+            const errorMessage = error.response?.data?.message || "Rgistration Failed. Please try again"
+            // const errorMessage = error.response?.data?.message 
+            console.log(errorMessage)
+            setError(error.response.data.errors) // added to display the error message which is set in the Schema
         }
 
   };
     return(
         <main className="max-w-md mx-auto p-4">
-      <h1 className="font-extrabold text-center text-2xl text-sky-400 mb-6">Register Page</h1>
+      <h1 className="font-extrabold text-center text-2xl text-sky-400 mb-6">Registration Page</h1>
 
       {error && (<p className="text-red-600 font-semibold mb-4 text-center">{error}</p>)}
     
