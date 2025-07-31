@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom"
 import { useUser } from "../context/UserContext";
 
 function LoginPage(){
-
+    const [error, setError] = useState("")
     const {setUser} = useUser();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -12,6 +12,7 @@ function LoginPage(){
         password: ""
     })
     const handleChange = (e) => {
+        setError("")
         setFormData({
             ...formData, [e.target.name]: e.target.value
         })
@@ -29,6 +30,8 @@ function LoginPage(){
             
         } catch (error) {
             console.log(error)
+            const errorMessage = error.response?.data?.message || "Login Failed. Please try again"
+            setError(errorMessage)
         }
     
       }
@@ -36,6 +39,10 @@ function LoginPage(){
     return(
         <main className="max-w-md mx-auto p-4">
             <h1 className="font-extrabold text-center text-2xl text-sky-400 mb-6" >Login page</h1>
+
+            {/* Adding Error message */}
+            {error && (<p className="text-red-600 font-semibold mb-4 text-center">{error}</p>)}
+
             <form className= "flex flex-col space-y-4" onSubmit={handleSubmit}>
                 <div>
                     <label htmlFor="email"/>
@@ -53,7 +60,7 @@ function LoginPage(){
                     <input className="border rounded px-3 py-2 w-full"
                     type = "password"
                     name = "password"
-                    palceholder = "password"
+                    palceholder = "Password"
                     value = {formData.password}
                     onChange={handleChange}
                     required

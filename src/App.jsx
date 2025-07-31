@@ -17,10 +17,20 @@ function App() {
   const { user } = useUser()
 
   return (
-    <>
-     <h1 className='font-bold'> ProTasker- A Project Management App</h1>
+    <div
+      className="min-h-screen flex flex-col text-blue-900"
+      style={{
+        backgroundImage: "url('/appBg.png')", // Make sure bg.png is in /public
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        backgroundPosition: "center center",
+      }}
+    >
+     
+     
+     {/* <h1 className='font-bold'> Project Guru - A Project Management App</h1> */}
      <NavBar/>
-
+    <main className="flex-grow">
       {!user? (
         <Routes>
         <Route path='/' element={<HomePage/>} />
@@ -38,9 +48,9 @@ function App() {
         
       </Routes>
       )}
-      
+      </main>      
       <Footer/>
-    </>
+    </div>
   )
 }
 

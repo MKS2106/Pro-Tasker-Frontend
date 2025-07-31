@@ -1,8 +1,8 @@
  function Footer(){
     return(
-        <footer>
-        <h3 className="mt-6 font-bold">© 2025 ProTasker Inc.</h3>
-        </footer>
+         <footer className="bg-sky-100 py-4 text-center text-blue-900 font-bold">
+      © 2025 ProjectGuru: Developed by Manasa Madhihalli Swamy
+    </footer>
     )
        
   }

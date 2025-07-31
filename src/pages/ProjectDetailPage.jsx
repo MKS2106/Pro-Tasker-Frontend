@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { backendClient } from "../client/backendClient";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import TasksPage from "./TasksPage";
 
 function ProjectDetailPage() {
@@ -38,6 +38,17 @@ function ProjectDetailPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+         // to add validation for past date - Reference: mod-4 SBA
+     const dueDate = new Date(taskDueDate)
+     const today = new Date()
+      
+        if(dueDate < today){
+          alert("Due date cannot be in the past")
+          setTaskDueDate("")
+          return
+
+      }
         if(editTask){
 
 
@@ -101,6 +112,10 @@ function ProjectDetailPage() {
   const handleTaskDelete = async (taskId) => {
     // const projectId = e.target.id
     console.log(`Trying to delete the project${taskId}`);
+    const confirm = window.confirm("Are you sure you want to delete this task?")
+    if(!confirm){
+            return
+    }
     try {
       const res = await backendClient.delete(`/tasks/${taskId}`, {
         headers: {
@@ -144,7 +159,14 @@ function ProjectDetailPage() {
           </div>
             <button
           className="h-fit mb-3 px-7 py-2 bg-green-100 font-bold text-green-800 border border-green-300 rounded hover:bg-green-200"
-          onClick={() => setShowForm((prev) => !prev)}
+          onClick={() => {
+            if(showForm){
+              setTitle("")
+              setDescription("")
+              setTaskDueDate("")
+              setEditTask("")
+            }
+            setShowForm((prev) => !prev)}}
         >
           {showForm? "Cancel" : "+ Add Task" }
         </button>
@@ -181,6 +203,9 @@ function ProjectDetailPage() {
             </button>
           </div>
         ))}
+      </div>
+      <div className="text-center">
+        <Link to="/dashboard" className="inline-block bg-blue-200 font-semibold py-1 px-3 rounded ">Back</Link>
       </div>
 
       {/******************************** Adding new Tasks *****************************************/}

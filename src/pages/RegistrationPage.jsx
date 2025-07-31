@@ -2,8 +2,10 @@ import { useState } from "react";
 import { backendClient } from "../client/backendClient";
 import { useNavigate } from "react-router-dom"
 
-function RegistrationPage(){
+// import { useUser } from "../context/UserContext";
 
+function RegistrationPage(){
+  const [error, setError] = useState("")
   const navigate = useNavigate();
         
   const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ function RegistrationPage(){
   });
 
 const handleChange = (e) => {
+    setError("")
     setFormData({
         ...formData, [e.target.name]: e.target.value
     })
@@ -27,13 +30,17 @@ const handleChange = (e) => {
         navigate('/login')
 
     } catch (error) {
-        console.log(error)
-    }
+            console.log(error)
+            const errorMessage = error.response?.data?.message || "Login Failed. Please try again"
+            setError(errorMessage)
+        }
 
   };
     return(
         <main className="max-w-md mx-auto p-4">
       <h1 className="font-extrabold text-center text-2xl text-sky-400 mb-6">Register Page</h1>
+
+      {error && (<p className="text-red-600 font-semibold mb-4 text-center">{error}</p>)}
     
       <form className= "flex flex-col space-y-4" onSubmit={handleSubmit}>
         <div>        

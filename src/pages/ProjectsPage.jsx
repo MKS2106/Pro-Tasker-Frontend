@@ -18,9 +18,9 @@ function ProjectsPage() {
   const {user} = useUser();
 
   useEffect(() => {
-    const token = localStorage.getItem("protasker-token")
-    console.log(token)
-    if(token){
+    // const token = localStorage.getItem("protasker-token")
+    // console.log(token)
+    // if(token){
 
    
     const fetchProjects = async () => {
@@ -39,7 +39,7 @@ function ProjectsPage() {
 
     
     fetchProjects();
-     }
+    //  }
   }, []);
   
 
@@ -48,6 +48,19 @@ function ProjectsPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+
+      // to add validation for past date - Reference: mod-4 SBA
+     const dueDate = new Date(deadLine)
+     const today = new Date()
+      
+        if(dueDate < today){
+          alert("Due date cannot be in the past")
+          setDeadLine("")
+          return
+
+      }
+    
+     
 
       if(isEditing){
         const res = await backendClient.put(
@@ -111,7 +124,14 @@ function ProjectsPage() {
   const handleDelete = async (projectId) => {
     // const projectId = e.target.id
     console.log(`Trying to delete the project${projectId}`);
+    const confirm = window.confirm("Are you sure you want to delete the project?")
+    if(!confirm){
+            return
+    }
+    //  alert("deleting the projet")
+  
     try {
+     
       const res = await backendClient.delete(
         `/projects/${projectId}`,
         // { name: "UpdatedName", description:"UpdatedDescrption" },
@@ -136,7 +156,8 @@ function ProjectsPage() {
 
   return (
     <main className="max-w-md mx-auto p-4">
-      <h1>Welcome {user.username} </h1>
+      {/* <h1>Welcome {user.username} </h1> */}
+      <div className="border rounded p-4">    
       <form className="flex flex-col space-y-4 mt-3" onSubmit={handleSubmit}>
         <div>
           <label htmlFor="name" />
@@ -182,10 +203,13 @@ function ProjectsPage() {
           value={ isEditing ? "Update Project" : "Create Project"}
         />
       </form>
+      </div>
+
       <div className="mb-4">
-        {projects.length > 0 && (
+        {/* {projects.length > 0 && ( */}
+          {projects.length > 0 ? (
           <>
-            <h2 className="font-bold text-xl mb-1 mt-4">Project List:</h2>
+            <h2 className="font-bold text-xl text-center mb-1 mt-4">Current Projects:</h2>
             {projects.map((project) => (
               <div
                 key={project._id}
@@ -220,7 +244,7 @@ function ProjectsPage() {
               </div>
             ))}
           </>
-        )}
+        ): <p className="text-center font-semibold text-orange-800 italic mt-2"> There are no active projects.</p>}
       </div>
     </main>
   );
