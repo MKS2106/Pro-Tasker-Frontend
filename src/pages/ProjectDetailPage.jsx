@@ -190,8 +190,8 @@ function ProjectDetailPage() {
             >
               {task.title}
             </h4>
-            <p className="text-gray-700 mb-4">{task.description}</p>
-            <p className="text-gray-700 mb-4">{task.status}</p>
+            <p className="text-gray-700 mb-4">Description: {task.description}</p>
+            <p className="text-gray-700 mb-4">Status: {task.status}</p>
             {task.deadLine && (
               <p className="text-gray-700 mb-4">
                 Due Date: {new Date(task.deadLine).toLocaleDateString()}
