@@ -5,6 +5,7 @@ import { useUser } from "../context/UserContext";
 
 function LoginPage(){
     const [error, setError] = useState("")
+    // const [loading, setLoading] = useState(fasle);
     const {setUser} = useUser();
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -19,6 +20,7 @@ function LoginPage(){
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
+        // setLoading(true);
         try {
             //access endpoint /api/users/login
             const res = await backendClient.post('/users/login', formData)
@@ -33,6 +35,9 @@ function LoginPage(){
             const errorMessage = error.response?.data?.message || "Login Failed. Please try again"
             setError(errorMessage)
         }
+        // finally {
+        //     setLoading(false);
+        // }
     
       }
 
@@ -68,6 +73,9 @@ function LoginPage(){
                 </div>
 
                 <input className="border bg-sky-100 rounded p-1 font-bold text-blue-800" type="submit" value="Login" />
+
+                {/* <input className="border bg-sky-100 rounded p-1 font-bold text-blue-800" type="submit" value={loading ? "Logging in..." : "Login"} disabled={loading} /> */}
+
             </form>
         </main>
     )
