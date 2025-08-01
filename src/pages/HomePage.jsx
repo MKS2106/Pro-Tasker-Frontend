@@ -18,7 +18,7 @@ function HomePage(){
         that’s easy to use, highly customizable, and packed with features. From task tracking to collaboration,
         Project Guru helps you stay organized and focused on what matters most.
       </p>
-
+      {/* Display the link GetStarted only if user is not logged in */}
       <div className="text-center"> {!user ? (<><Link to="/register" className="mt-56 inline-block bg-blue-400 font-semibold py-3 px-6 rounded ">Get Started - Register Now</Link></>) : 
       <h2 className="mt-2 font-bold text-xl">Hello Again!! </h2>}
         

@@ -30,9 +30,7 @@ function AdminUser(){
     return(
         <main>
             <h2 className="font-bold text-xl text-center mb-1 mt-4">Welcome Admin: Dispalying All Users</h2>
-                 {/* <h1>Welcome Admin: Dispalying All User</h1> */}
-                 {/* <div className="grid grid-cols-3 gap-4"> */}
-        {/* {projects.length > 0 && ( */}
+            
           {users.length > 0 ? (
           <div className="mx-auto max-w-6xl grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mt-4">
             

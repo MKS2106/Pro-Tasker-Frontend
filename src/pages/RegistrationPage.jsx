@@ -2,8 +2,6 @@ import { useState } from "react";
 import { backendClient } from "../client/backendClient";
 import { useNavigate } from "react-router-dom"
 
-// import { useUser } from "../context/UserContext";
-
 function RegistrationPage(){
   const [error, setError] = useState("")
   const navigate = useNavigate();
@@ -24,10 +22,6 @@ const handleChange = (e) => {
     e.preventDefault();
     try {
 
-    //     if (formData.password.length < 5) {
-    //   alert("Password must be at least 5 characters");
-    //   return;
-    // }
         const res = await backendClient.post('/users/register', formData)
         console.log(res.data)
         localStorage.setItem('protasker-token', JSON.stringify(res.data.token))

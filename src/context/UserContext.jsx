@@ -14,6 +14,7 @@ function UserProvider({children}){
     useEffect(() => {
         const token = JSON.parse(localStorage.getItem("protasker-token"))
         console.log(token, "from userContext")
+        //Browser refresh: retains the logged in/logged out state
         if(token){
            backendClient.get("/projects", {
                       headers: {
@@ -38,7 +39,7 @@ function UserProvider({children}){
     )
 
 }
-
+//Create and export to access fron any component
 export const useUser = () => {
     const context = useContext(UserContext)
     return context

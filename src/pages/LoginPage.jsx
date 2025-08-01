@@ -20,13 +20,13 @@ function LoginPage(){
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-
+            //access endpoint /api/users/login
             const res = await backendClient.post('/users/login', formData)
-            console.log(res.data)
-            localStorage.setItem('protasker-token', JSON.stringify(res.data.token))
+            console.log(res.data) //Debugging 
+            localStorage.setItem('protasker-token', JSON.stringify(res.data.token)) //Set the local storage with the key:protasker-token with the token from json response
             
-            setUser(res.data.user)
-            navigate('/dashboard')
+            setUser(res.data.user)//set the user with the response data
+            navigate('/dashboard')//upon successfull login navigate user to the dashboard
             
         } catch (error) {
             console.log(error)
@@ -40,7 +40,7 @@ function LoginPage(){
         <main className="max-w-md mx-auto p-4">
             <h1 className="font-extrabold text-center text-2xl text-sky-400 mb-6" >Login page</h1>
 
-            {/* Adding Error message */}
+            {/* Adding Error message - handling error from server side */}
             {error && (<p className="text-red-600 font-semibold mb-4 text-center">{error}</p>)}
 
             <form className= "flex flex-col space-y-4" onSubmit={handleSubmit}>

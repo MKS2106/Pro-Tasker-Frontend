@@ -6,19 +6,19 @@ import TasksPage from "./TasksPage";
 function ProjectDetailPage() {
   const { projectId } = useParams();
   const [title, setTitle] = useState("");
+
   const [description, setDescription] = useState("");
   const [taskDueDate, setTaskDueDate] = useState("");
   const [project, setProject] = useState({}); //project is an object so setting it as an object
   const [tasks, setTasks] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-
-  const [editTask, setEditTask] = useState("");
-
+  const [showForm, setShowForm] = useState(false); //toggle task form visibility
+  const [editTask, setEditTask] = useState(""); //hold task being edited
   // added to track task status
   const [status, setStatus] = useState("");
 
   const navigate = useNavigate();
 
+  //Get/List project details
   useEffect(() => {
     const fetchProject = async () => {
       try {
@@ -44,7 +44,7 @@ function ProjectDetailPage() {
       // to add validation for past date - Reference: mod-4 SBA
       const dueDate = new Date(taskDueDate);
       const today = new Date();
-
+      //Validate dueDate for past date
       if (dueDate < today) {
         alert("Due date cannot be in the past");
         setTaskDueDate("");
@@ -81,7 +81,7 @@ function ProjectDetailPage() {
             },
           }
         );
-        setTasks((prev) => [...prev, res.data]);
+        setTasks((prev) => [...prev, res.data]); //Append new tasks
       }
 
       setTitle("");
@@ -95,6 +95,7 @@ function ProjectDetailPage() {
     }
   };
 
+  //Populate form for editing a task
   const handleTaskEdit = async (taskId) => {
     const task = tasks.find((task) => task._id === taskId);
     console.log(task);
@@ -103,15 +104,16 @@ function ProjectDetailPage() {
       setTitle(task.title);
       setDescription(task.description);
       setStatus(task.status);
-      setTaskDueDate(task.deadLine || "");
+      const date = task.deadLine ? new Date(task.deadLine).toISOString().split("T")[0] : "" ;
+      setTaskDueDate(date);
       setShowForm(true);
     }
-    // setEditTask("")
   };
 
+  //handler to delete a task
   const handleTaskDelete = async (taskId) => {
-    // const projectId = e.target.id
-    console.log(`Trying to delete the project${taskId}`);
+    console.log(`Trying to delete the project${taskId}`); //debugging
+    //Confirm before deleting the task
     const confirm = window.confirm(
       "Are you sure you want to delete this task?"
     );
@@ -186,11 +188,13 @@ function ProjectDetailPage() {
           >
             <h4
               className="text-lg font-semibold text-blue-600 underline mb-2"
-              //   onClick={() => navigate(`/tasks/${task._id}`)}
+              
             >
               {task.title}
             </h4>
-            <p className="text-gray-700 mb-4">Description: {task.description}</p>
+            <p className="text-gray-700 mb-4">
+              Description: {task.description}
+            </p>
             <p className="text-gray-700 mb-4">Status: {task.status}</p>
             {task.deadLine && (
               <p className="text-gray-700 mb-4">
