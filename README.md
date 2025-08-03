@@ -76,8 +76,17 @@ npm run dev
 
 ### 📸 Screenshots
 
+<h4>🏠 Home Page</h4>
+<img src="./screenshots/HomePage-LoggedOut.png" alt="Homepage Page" width="500"/>
+<h4>📝 Registration Page</h4>
+<img src="./screenshots/RegistrattioPage.png" alt="Registration Page" width="500"/>
 <h4>🔐 Login Page</h4>
 <img src="./screenshots/LogInpage.png" alt="Login Page" width="500"/>
+<h4>🧭 DashBoard</h4>
+<img src="./screenshots/DashBoard.png" alt="DashBoard Page" width="500"/>
+<h4>📋 Project details Page</h4>
+<img src="./screenshots/ProjectDetailPage.png" alt="ProjectDetailPage Page" width="500"/>
+
 
 
 
