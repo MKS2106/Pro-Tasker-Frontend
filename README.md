@@ -23,7 +23,7 @@ Designed with usability and responsiveness in mind, this frontend supports, regi
 
 ## 📁 Project Structure
 
-<prev>
+<pre>
 projectguru-frontend/
 ├── public/             # Static assets & index.html
 ├── src/
@@ -35,7 +35,8 @@ projectguru-frontend/
 │   ├── assets/         
 │   ├── utils/          # Helper functions and constants
 │   ├── App.jsx          # Main React component and routing
-│   └── main.jsx        # React DOM rendering entry point </prev>
+│   └── main.jsx        # React DOM rendering entry point 
+</pre>
 
 ## ⚙️ Technologies Used
 
