@@ -1,12 +1,87 @@
-# React + Vite
+# 🚀 ProjectGuru Frontend – Interactive Project Management UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+---
 
-Currently, two official plugins are available:
+## 📌 Overview
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+The **ProjectGuru** is a modern, responsive, and interactive web application built using **React.js**, **Tailwind CSS**, and **JavaScript**. It serves as the user interface for managing projects, tasks, seamlessly communicating with the backend API for data persistence and user authentication.
 
-## Expanding the ESLint configuration
+Designed with usability and responsiveness in mind, this frontend supports, registering User, Logging in. Creating, editing, and deleting projects and tasks, while providing smooth user interactions like form toggling between "user" to "admin", error handling.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## 🎯 Core Features
+
+- ✅ **User Authentication UI** integrating with backend login and registration.
+- 📝 Create, view, edit, and delete **projects**.
+- 📄 Interactive **tasks** creation, editing, deletion.
+- 📱 Fully **responsive design** powered by **Tailwind CSS**.
+- ⚠️ Friendly **error handling** and validation feedback.
+- 💾 State management using React hooks, with API calls for persistent data.
+
+---
+
+## 📁 Project Structure
+
+<prev>
+projectguru-frontend/
+├── public/             # Static assets & index.html
+├── src/
+│   ├── components/     # Reusable UI components 
+│   ├── contexts/       # React Contexts for auth and state management
+│   ├── hooks/          # Custom React hooks
+│   ├── pages/          # Page-level components (Dashboard, Login, Register)
+│   ├── client/         # API call logic (fetch/axios)
+│   ├── assets/         
+│   ├── utils/          # Helper functions and constants
+│   ├── App.jsx          # Main React component and routing
+│   └── main.jsx        # React DOM rendering entry point </prev>
+
+## ⚙️ Technologies Used
+
+- Vite 
+- React.js (Frontend framework)
+- Tailwind CSS for vite
+- React Router (SPA routing)
+- Axios or Fetch API (HTTP requests)
+- React Context API (State and authentication management)
+- ESLint / Prettier (Code quality tools)
+
+## Prerequisites
+
+- Node.js installed 
+- npm
+- Access to the ProjectGuru backend API
+- Modern browser
+
+## Setup & Running Locally
+
+1. **Clone the repository:**
+
+ - bash/terminal 
+git clone "GitHub URL"
+cd projectguru-frontend
+
+2. **Install dependencies:**
+npm install
+
+3. Configure environment variables:
+Create a .env file in the root directory with:
+VITE_URL=http://localhost:3000/api
+
+4. Start the development server:
+npm run dev
+
+5. Open http://localhost:3000 to view in browser.
+
+### ScreenShots:
+### 🔐 Login Page
+![Login Page](./screenshots/Loginpage.png)
+
+
+
+
+
+
+
+
