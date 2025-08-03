@@ -76,7 +76,7 @@ npm run dev
 
 ### ScreenShots:
 ### 🔐 Login Page
-![Login Page](./screenshots/Loginpage.png)
+![Loginpage Page](./screenshots/LogInpage.png)
 
 
 
