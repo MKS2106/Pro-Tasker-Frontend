@@ -74,9 +74,10 @@ npm run dev
 
 5. Open http://localhost:3000 to view in browser.
 
-### ScreenShots:
-### 🔐 Login Page
-![Loginpage Page](./screenshots/LogInpage.png)
+### 📸 Screenshots
+
+<h4>🔐 Login Page</h4>
+<img src="./screenshots/LogInpage.png" alt="Login Page" width="500"/>
 
 
 
