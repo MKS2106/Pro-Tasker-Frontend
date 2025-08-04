@@ -78,7 +78,6 @@ npm run dev
 ## Acknowledgments
 - Special thanks to my instructors for their guidance, encouragement and support
 - A big thank you to my peers for their valuable feedback,support throughout this project.
-- Link to website [ProjectGuru](projectguru-protasker.netlify.app).
 
 ### 📸 Screenshots
 
