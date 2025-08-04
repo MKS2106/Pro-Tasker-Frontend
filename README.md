@@ -75,6 +75,11 @@ npm run dev
 
 5. Open http://localhost:3000 to view in browser.
 
+## Acknowledgments
+- Special thanks to my instructors for their guidance, encouragement and support
+- A big thank you to my peers for their valuable feedback,support throughout this project.
+- Link to website [ProjectGuru](projectguru-protasker.netlify.app).
+
 ### 📸 Screenshots
 
 <h4>🏠 Home Page</h4>
